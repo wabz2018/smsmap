@@ -1,78 +1,335 @@
+ const express = require('express');
+ const path = require('path');
+ const ejs = require('ejs');
+ const bodyParser = require('body-parser');
+ const multer = require('multer');
+ const mysql = require('mysql');
+ const connection = require('./config');
+ const cors = require('cors');
+ const fs = require('fs');
+ const fastcsv = require('fast-csv');
 
-ACCOUNT_SID = 'ACa1308a0913638d16472f22089ee52a41'
-AUTH_TOKEN = '0e2a77ed469fc17ffed3cffde2bac0a2'
-SERVICE_SID = 'ISadb22c5c8bd65262c6914ec0b901b7d9'
-const client = require('twilio')(ACCOUNT_SID, AUTH_TOKEN); 
-   
-// User-defined function to send bulk SMS to desired 
-// numbers bypassing numbers list as parameter 
-function sendBulkMessages(messageBody, numberList) 
-{ 
-    var numbers = []; 
-    for(i = 0; i < numberList.length; i++) 
-    { 
-        numbers.push(JSON.stringify({  
-            binding_type: 'sms', address: numberList[i]})) 
-    } 
-   
-    const notificationOpts = { 
-      toBinding: numbers, 
-      body: messageBody, 
-    }; 
-   
-    client.notify 
-    .services(SERVICE_SID) 
-    .notifications.create(notificationOpts) 
-    .then(notification => console.log(notification.sid)) 
-    .catch(error => console.log(error)); 
-} 
-     
-// Sending our custom message to all numbers 
-// mentioned in array. 
-//sendBulkMessages('Greetings from Vincent Wabwoba| Simple systems, Keep safe', 
-  //  ['+254705778658', '+254729424631','+254715560734','+254715463283']) 
+ //file stream
+ //constants
+ const port = 2500;
+ let staticBasePath = './static';
 
-   //email integration
- const express= require('express');
-const path = require('path');
-const ejs = require('ejs');
-const bodyParser = require('body-parser');
-const multer=require('multer');
-const connection=require('./config');
+ const app = express();
+ app.set('views', path.join(__dirname, 'views'));
+ app.set('view engine', 'ejs');
+ app.use(bodyParser.json({
+   limit: "50mb"
+ }));
+ app.use(bodyParser.urlencoded({
+   limit: "50mb",
+   extended: true,
+   parameterLimit: 50000
+ }));
+ app.set('public', path.join(__dirname, 'public'));
+ app.use('/uploads', express.static('uploads'));
+ app.use('/images', express.static('images'));
 
-const port =2500;
+ // parse requests of content-type - application/x-www-form-urlencoded
+ app.use(bodyParser.urlencoded({
+   extended: true
+ }));
 
-const app=express();
-app.set('views',path.join(__dirname,'views'));
-app.set('view engine', 'ejs');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.set('public',path.join(__dirname, 'public'));
-app.use('/uploads',express.static('uploads'));
-app.use('/images', express.static('images'));
-  
-//controllers 
-let authenticateController= require('./controllers/authenticate-controller');
-let registerController= require('./controllers/register-controller');
+ app.use(cors());
 
-app.post('/api/register',registerController.register);
-app.post('/api/authenticate', authenticateController.authenticate)
 
-app.post('/controllers/authenticate-controller',authenticateController.authenticate);
-app.post('/controllers/register-controller', registerController.register);
-//views 
-app.get('/', function (req, res) {
-    res.sendFile( __dirname +'/'+ "login.html" );
-});
+ //controllers 
+ let authenticateController = require('./controllers/authenticate-controller');
+ let registerController = require('./controllers/register-controller');
+ let addschoolcontroller = require('./controllers/addschool-controller');
+ let addcompanycontroller=require('./controllers/addcompany-controller');
 
-//register
-app.get('/register', function(req, res) {
-     res.render('register',{
-        title:'SMS | Solution',
-         hd: 'Registration Panel '
+ app.post('/api/register', registerController.register);
+ app.post('/api/authenticate', authenticateController.authenticate);
+ app.post('/api/addschool', addschoolcontroller.addschool);
+ app.post('/api/addcompany', addcompanycontroller.addcompany);
+
+ app.post('/controllers/authenticate-controller', authenticateController.authenticate);
+ app.post('/controllers/register-controller', registerController.register);
+ app.post('/controllers/addschool-controller', addschoolcontroller.addschool);
+ app.post('/controllers/addcompany-controller',addcompanycontroller.addcompany);
+ //views 
+ app.get('/', function (req, res) {
+   res.sendFile(__dirname + '/' + "login.html");
+ });
+
+ //register
+ app.get('/register', function (req, res) {
+   res.render('register', {
+     title: 'SMS | Solution',
+     hd: 'ADD USER '
+   });
+ });
+
+ app.get('/users', (req, res) => {
+   let sql = "SELECT * FROM users";
+   connection.query(sql, (err, rows) => {
+     if (err) throw err;
+     res.render('users', {
+       title: 'SMS |Solution',
+       hd: 'REGISTERED USERS',
+       users: rows
      });
-    }
-);
-app.listen(port,()=>{
-    console.log('server running on port:'+port);
+   });
+ });
+
+ app.get('/edit/:userId',(req, res) => {
+  const userId = req.params.userId;
+  let sql = `Select * from users where id = ${userId}`;
+  connection.query(sql,(err, result) => {
+      if(err) throw err;
+      res.render('useredit', {
+          title :'SMS | Solution',
+          hd:'EDIT USER',
+          user : result[0]
+      });
+  });
 });
+app.post('/update',(req, res) => {
+  const userId = req.body.id;
+  let sql = "update users SET firstname='"+req.body.firstname+"',  lastname='"+req.body.lastname+"',  phonenumber='"+req.body.phonenumber+"' where id ="+userId;
+ connection.query(sql,(err, result) => {
+      if(err) throw err;
+      res.redirect('/users');
+  });
+});
+
+app.get('/delete/:userId',(req, res) => {
+  const userId = req.params.userId;
+  let sql = `DELETE from users where id = ${userId}`;
+   connection.query(sql,(err, result) => {
+      if(err) throw err;
+      res.redirect('/users');
+  });
+});
+ //add customer
+ app.get('/addcustomer', function (req, res) {
+   res.render('addcustomer', {
+     title: 'SMS | Solution',
+     hd: 'ADD CUSTOMER'
+   });
+ });
+ //add student
+ app.get('/addstudent', function (req, res) {
+   res.render('addstudent', {
+     title: 'SMS | Solution',
+     hd: 'ADD STUDENT'
+   });
+ });
+ //add teacher
+ app.get('/addteacher', function (req, res) {
+   res.render('addteacher', {
+     title: 'SMS | Solution',
+     hd: 'ADD TEACHER'
+   });
+ });
+ app.get('/addcompany', (req, res) => {
+   res.render('addcompany', {
+     title: 'SMS |Solution',
+     hd: 'ADD COMPANY'
+   });
+ });
+ app.get('/companys', (req, res) => {
+   let sql = "SELECT * from companydetails";
+   connection.query(sql, (err, rows) => {
+     if (err) throw err;
+     res.render('companys', {
+       title: 'SMS | Solution',
+       hd: 'REGISTERED COMPANIES',
+       companies: rows
+     })
+   });
+ });
+ //add school
+ app.get('/addschool', function (req, res) {
+   res.render('addschool', {
+     title: 'SMS | Solution',
+     hd: 'ADD SCHOOL'
+   });
+ });
+ //view schools
+ app.get('/schools', function (req, res) {
+   let sql = "SELECT * FROM schooldetails";
+   connection.query(sql, (err, rows) => {
+     if (err) throw err;
+     res.render('schools', {
+       title: 'SMS | Solution',
+       hd: 'REGISTERED SCHOOLS',
+       schools: rows
+     });
+   });
+ });
+ //add term
+ app.get('/addterm', function (req, res) {
+   res.render('addterm', {
+     title: 'SMS | Solution',
+     hd: 'ADD TERM'
+   });
+ });
+ //add class
+ app.get('/addclass', function (req, res) {
+   res.render('addclass', {
+     title: 'SMS | Solution',
+     hd: 'ADD CLASS'
+   });
+ });
+ //summary
+ app.get('/summary', function (req, res) {
+   res.render('summary', {
+     title: 'SMS | Solution',
+     hd: 'SUMMARY'
+   });
+ });
+ app.get('/home', function (req, res) {
+   let numsch='',numcomp='', numstudent='', numteachers='', numcampaigns='';
+   let sql="SELECT * from schooldetails";
+   connection.query(sql,(err, result)=>{
+     if(err)throw err;
+     numsch=result.length;
+ let sql2="select * from companydetails";
+ connection.query(sql2,(err,result)=>{
+if(err)throw err;
+numcomp=result.length;
+    res.render('home', {
+      title: 'SMS | Solution',
+      hd: 'SUMMARY DASHBOARD',
+      schools:numsch,
+      companies : numcomp,
+      campaigns: 3,
+      teachers:4,
+      students:3400,
+      messages:45,
+      offers:4500
+   });
+  });
+  });
+ });
+ app.get('/dashboard', function (req, res) {
+   res.render('dashboard', {
+     title: 'SMS Dashboard',
+     hd: 'Main Panel'
+   })
+ });
+ //list schools
+ //list companies
+ //list campaigns
+ function checklistedloginid() {
+ }
+
+ function generateterms() {
+ }
+
+ function generateschoolcodes() {
+ }
+
+ function generateStudentID() {
+ }
+
+ function generateteacherid() {
+ }
+
+ function generatesmscode() {
+   let smstypes = ['Alert', 'Notification', 'Campaign', 'Message', 'Receipt'];
+   for (let i = 0; i < smstypes.length; i++) {
+     console.log("type is :" + smstypes[i]);
+   }
+   return smstypes;
+ }
+ app.post('/messagecategory', function (req, res) {
+   let fileLoc = path.resolve(staticBasePath);
+   fileLoc = path.join(fileLoc, req.body.file);
+   let stream = fs.createReadStream(fileLoc);
+   let csvData = [];
+   let csvStream = fastcsv
+     .parse()
+     .on("data", function (data) {
+       csvData.push(data);
+     })
+     .on("end", function () {
+       // remove the first line: header
+       csvData.shift();
+       const connection = mysql.createConnection({
+         host: "localhost",
+         user: "root",
+         password: "",
+         database: "simap"
+       });
+       // open the connection
+       connection.connect(error => {
+         if (error) {
+           console.error(error);
+         } else {
+           let query =
+             "INSERT INTO messagecategory (id, type, description, class, charge) VALUES ?";
+           connection.query(query, [csvData], (error, response) => {
+             console.log(error || response);
+           });
+         }
+       });
+     });
+   stream.pipe(csvStream);
+   res.render('home', {
+     title: 'SMS | Solution',
+     hd: 'Upload Panel '
+   });
+
+ });
+ app.post('/bulkcategory', function (req, res) {
+   let fileLoc = path.resolve(staticBasePath);
+   fileLoc = path.join(fileLoc, req.body.file);
+   let stream = fs.createReadStream(fileLoc);
+   let csvData = [];
+   let csvStream = fastcsv
+     .parse()
+     .on("data", function (data) {
+       csvData.push(data);
+     })
+     .on("end", function () {
+       // remove the first line: header
+       csvData.shift();
+       const connection = mysql.createConnection({
+         host: "localhost",
+         user: "root",
+         password: "",
+         database: "simap"
+       });
+       // open the connection
+       connection.connect(error => {
+         if (error) {
+           console.error(error);
+         } else {
+           let query =
+             "INSERT INTO category (id, name, description, created_at) VALUES ?";
+           connection.query(query, [csvData], (error, response) => {
+             console.log(error || response);
+           });
+         }
+       });
+     });
+   stream.pipe(csvStream);
+   res.render('home', {
+     title: 'SMS | Solution',
+     hd: 'Upload Panel '
+   });
+
+ });
+app.get('/sendemail',(req, res)=>
+{
+ const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('hghhh');
+const msg = {
+  to: 'betapps2020@gmail.com',
+  from: 'vincent.wabwoba18@gmail.com',
+  subject: 'Sending with SendGrid is Fun',
+  text: 'and easy to do anywhere, even with Node.js',
+  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+};
+sgMail.send(msg);
+});
+ app.listen(port, () => {
+   console.log('server running on port:' + port);
+ });
