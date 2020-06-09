@@ -1,0 +1,48 @@
+  
+<%- include('../templates/headerindex') -%>
+<div class="row">
+    <div class="col-md-2">
+       <!-- <%- include('../templates/leftnav') -%> -->
+    </div>
+<div class="col-md-8">
+    <center><h4 style="color:blue;"><%= title%></h4></center>
+    <%= typeof msg !='undefined' ? msg: ''%>
+    <div class="row">
+        <form class="col s8" action="/controllers/addcompany-controller" method="post">
+            <center> <h6><%= hd %></h6></center>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="companyname" type="text" class="validate">
+                    <label for="companyname">Company Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="companycontact" type="tel" class="validate" minlength="10" maxlength="16">
+                    <label for="companycontact">Phone Number</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="companyemail" type="email" id ="schoolemail" class="validate">
+                    <label for="companyemail">Email</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="companyaddress" type="text" id ="schooladdress" class="validate" minlength="6" max="50">
+                    <label for="companyaddress">Address :</label>
+                </div>
+            </div>
+            <button value="submit" class="btn">Save</button>
+        </form>
+
+    </div>
+    <div class="col-md-2">
+   <!--  <%- include('../templates/rightnav') -%> -->
+    </div>
+</div>
+</div>
+<div class="footer">
+    <%- include ('../templates/footer'); -%>
+</div>

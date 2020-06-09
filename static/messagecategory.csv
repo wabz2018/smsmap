@@ -1,0 +1,6 @@
+0,type, description, class, charge
+1,Alert, Normal alert message, a001, 12
+2,Notification, Meeting Notification to parents, a002, 15
+3,Fee Alert, Fee alert to parents, b001,10
+4,Fee Balance, Fee balance repors to parents, b002, 5
+5,Exam Report , Performance alert to parents, c001,10

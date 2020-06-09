@@ -1,0 +1,53 @@
+  
+<%- include('../templates/headerindex') -%>
+<div class="content">
+<div class="row">
+    <div class="col-md-4">
+<%- include('../templates/leftnav') -%>
+    </div>
+
+    <div class="col-md-4">
+       <!-- <%- include('../templates/rightnav') -%> -->
+       <img src="/images/banner.png" class="brand-logo">
+    </div>
+    <div class="col-md-4" style="text-align: right;">
+        <%- include('../templates/rightnav') -%>
+    </div>
+</div>
+<div class="row">
+    <a href="/register" class="btn btn-sm btn-primary">Add User</a><br/><br/>
+    <table class="heightlight responsive-table">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Phone Number</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% users.forEach(function(user){ %>
+            <tr>
+                <td><%= user.firstname %></td>
+                <td><%= user.lastname %></td>
+                <td><%= user.email %></td>
+                <td><%= user.role %></td>
+                <td><%= user.phonenumber %></td>
+                <td><%= user.istatus %></td>
+                <td>
+                    <a href="edit/<%= user.id %>" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="delete/<%= user.id %>" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+        </div>
+    </div>
+    <div class="footer" style="border-color: blue; height: 10px; width: auto; margin: 2px;">
+        <%- include('../templates/footer') -%>
+    </div>
+    </div>

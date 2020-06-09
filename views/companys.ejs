@@ -1,0 +1,51 @@
+  
+<%- include('../templates/headerindex') -%>
+<div class="content">
+<div class="row">
+    <div class="col-md-4">
+<%- include('../templates/leftnav') -%>
+    </div>
+
+    <div class="col-md-4">
+       <!-- <%- include('../templates/rightnav') -%> -->
+       <img src="/images/banner.png" class="brand-logo">
+    </div>
+    <div class="col-md-4" style="text-align: right;">
+        <%- include('../templates/rightnav') -%>
+    </div>
+</div>
+<div class="row">
+    <a href="/addcompany" class="btn btn-sm btn-primary">Add Company</a><br/><br/>
+    <table class="heightlight responsive-table">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% companies.forEach(function(company){ %>
+            <tr>
+                <td><%= company.companycode %></td>
+                <td><%= company.companyname %></td>
+                <td><%= company.companycontact %></td>
+                <td><%= company.companyaddress %></td>
+                <td><%= company.companyemail %></td>
+                <td>
+                    <a href="edit/<%= company.id %>" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="delete/<%= company.id %>" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+        </div>
+    </div>
+    <div class="footer" style="border-color: blue; height: 10px; width: auto; margin: 2px;">
+        <%- include('../templates/footer') -%>
+    </div>
+    </div>

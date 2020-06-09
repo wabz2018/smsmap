@@ -1,0 +1,52 @@
+  
+<%- include('../templates/headerindex') -%>
+<div class="content">
+<div class="row">
+    <div class="col-md-4">
+<%- include('../templates/leftnav') -%>
+    </div>
+
+    <div class="col-md-4">
+       <!-- <%- include('../templates/rightnav') -%> -->
+       <img src="/images/banner.png" class="brand-logo">
+    </div>
+    <div class="col-md-4" style="text-align: right;">
+        <%- include('../templates/rightnav') -%>
+    </div>
+</div>
+<div class="row">
+    <a href="/addschool" class="btn btn-sm btn-primary">Add School</a><br/><br/>
+    <table class="heightlight responsive-table">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% schools.forEach(function(school){ %>
+            <tr>
+                <td><%= school.schoolcode %></td>
+                <td><%= school.schoolname %></td>
+                <td><%= school.schoolcontact %></td>
+                <td><%= school.schooladdress %></td>
+                <td><%= school.schoolemail %></td>
+             
+                <td>
+                    <a href="edit/<%= school.id %>" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="delete/<%= school.id %>" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+        </div>
+    </div>
+    <div class="footer" style="border-color: blue; height: 10px; width: auto; margin: 2px;">
+        <%- include('../templates/footer') -%>
+    </div>
+    </div>

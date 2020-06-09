@@ -1,0 +1,49 @@
+  <%- include('../templates/headerindex') -%>
+  <div class="content">
+      <div class="row">
+          <div class="col-md-4">
+              <%- include('../templates/leftnav') -%>
+          </div>
+
+          <div class="col-md-4">
+              <!-- <%- include('../templates/rightnav') -%> -->
+              <img src="/images/banner.png" class="brand-logo">
+          </div>
+          <div class="col-md-4" style="text-align: right;">
+              <%- include('../templates/rightnav') -%>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+              <a href="/register" class="btn btn-sm btn-primary">Add User</a><br /><br />
+              <form action="/update" method="post">
+                  <input type="hidden" value="<%= user.id %>" name="id">
+                  <div class="form-group">
+                      <label for="firstname"> First Name:</label>
+                      <input type="text" class="form-control" id="firstname placeholder=" Enter Name"
+                          value="<%= user.firstname %>" name="firstname" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="lastname">Last Name:</label>
+                      <input type="text" class="form-control" id="lastname" placeholder="Enter Name"
+                          value="<%= user.lastname %>" name="lastname" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="email">Email:</label>
+                      <input type="email" class="form-control" id="email" placeholder="Enter email"
+                          value="<%= user.email %>" name="email" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="phonenumber">Phone No:</label>
+                      <input type="text" class="form-control" id="phonenumber" placeholder="Enter Phone No"
+                          value="<%= user.phonenumber %>" name="phonenumber" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+          </div>
+      </div>
+  </div>
+  <div class="footer" style="border-color: blue; height: 10px; width: auto; margin: 2px;">
+      <%- include('../templates/footer') -%>
+  </div>
+  </div>

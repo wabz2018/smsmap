@@ -170,6 +170,7 @@ app.get('/delete/:userId',(req, res) => {
      hd: 'ADD TERM'
    });
  });
+
  //add class
  app.get('/addclass', function (req, res) {
    res.render('addclass', {
@@ -208,6 +209,8 @@ numcomp=result.length;
   });
   });
  });
+
+
  app.get('/dashboard', function (req, res) {
    res.render('dashboard', {
      title: 'SMS Dashboard',
@@ -320,10 +323,10 @@ numcomp=result.length;
 app.get('/sendemail',(req, res)=>
 {
  const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey('hghhh');
+sgMail.setApiKey('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');
 const msg = {
-  to: 'betapps2020@gmail.com',
   from: 'vincent.wabwoba18@gmail.com',
+  to: 'betapps2020@gmail.com',
   subject: 'Sending with SendGrid is Fun',
   text: 'and easy to do anywhere, even with Node.js',
   html: '<strong>and easy to do anywhere, even with Node.js</strong>',

@@ -1,0 +1,71 @@
+  
+<%- include('../templates/headerindex') -%>
+<div class="row">
+    <div class="col-md-2">
+       <!-- <%- include('../templates/leftnav') -%> -->
+    </div>
+<div class="col-md-8">
+    <center><h4 style="color:blue;"><%= title%></h4></center>
+    <%= typeof msg !='undefined' ? msg: ''%>
+    <div class="row">
+        <form class="col s8" action="/controllers/register-controller" method="post">
+            <center> <h6><%= hd %></h6></center>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="username" type="text" class="validate">
+                    <label for="username">User Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="firstname" type="text" class="validate">
+                    <label for="firstname">First Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="lastname" type="text" class="validate">
+                    <label for="lastname">Last Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="email" type="email" id ="email" class="validate">
+                    <label for="email">Email</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="phonenumber" type="tel" id ="phonenumber" class="validate">
+                    <label for="phonenumber">Phone Number:</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="role">Select list:</label>
+                <select class="form-control" name="role">
+                    <option value="" disabled selected> --Select-- Role</option>
+                    <option value="Admin"> Administrator</option>
+                    <option value="User">User- Office</option>
+                    <option value="Clerk">Accountant</option>
+                    <option value="Cashier">Cashier</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="password" type="password" name="password" class="validate">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            <button value="submit" class="btn">Register</button>
+            <h4><a href="/login" >Login</a> </h4>
+        </form>
+
+    </div>
+    <div class="col-md-2">
+   <!--  <%- include('../templates/rightnav') -%> -->
+    </div>
+</div>
+</div>
+<div class="footer">
+    <<%- include ('../templates/footer'); -%>
+</div>
