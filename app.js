@@ -320,10 +320,11 @@ numcomp=result.length;
    });
 
  });
+const sendgridapikey='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';
+const sgMail = require('@sendgrid/mail');
 app.get('/sendemail',(req, res)=>
 {
- const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey('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');
+sgMail.setApiKey(sendgridapikey);
 const msg = {
   from: 'vincent.wabwoba18@gmail.com',
   to: 'betapps2020@gmail.com',
@@ -332,6 +333,54 @@ const msg = {
   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 };
 sgMail.send(msg);
+});
+
+
+//bulk email 
+app.get('/sendbulkemail', (req, res)=>{
+sgMail.setApiKey(sendgridapikey);
+let emails=['betapps2020@gmail.com','wabwoba.maelo10@gmail.com'];
+for(let i=0; i<emails.length; i++)
+{
+  const email={
+    from:'vincent.wabwoba18@gmail.com',
+    to: emails[i],
+    subject:'Bulk email sample',
+    text: 'Hello .. trying out the bulk email',
+    html:'<strong>and if it works its great</strong>'
+  };
+  sgMail.send(email ,(err, results)=>{
+    if(err){ console.log("error while sending email"+err);}
+    else{
+      console.log('Email sent')
+    }
+  });
+  console.log('Email sent to: '+emails[i]);
+}
+});
+
+//bulk email sample 2
+app.get('/emails', (req, res)=>{
+  sgMail.setApiKey(sendgridapikey);
+  let sql="SELECT * from emails where status='send'";
+  connection.query(sql, (err, rows, fields)=>{
+ if(err) throw err;
+ for(let i in rows)
+ {
+   const email={
+     from:'vincent.wabwoba18@gmail.com',
+     to:rows[i].email,
+     subject:'Bulk Email',
+     text: rows[i].message,
+     html:'<strong>This is fun</strong>'
+   };
+   sgMail.send(email,(err, results)=>{
+     if(err) {console.log("Error occured"+err);}
+     else{console.log("Email snet");}
+   });
+   console.log("Email sent to:" +rows[i].email);
+ }
+  });
 });
  app.listen(port, () => {
    console.log('server running on port:' + port);
