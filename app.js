@@ -36,6 +36,12 @@
 
  app.use(cors());
 
+//email
+
+const sendgridapikey='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';
+const sgMail = require('@sendgrid/mail');
+//sms
+
 
  //controllers 
  let authenticateController = require('./controllers/authenticate-controller');
@@ -320,8 +326,7 @@ numcomp=result.length;
    });
 
  });
-const sendgridapikey='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';
-const sgMail = require('@sendgrid/mail');
+
 app.get('/sendemail',(req, res)=>
 {
 sgMail.setApiKey(sendgridapikey);
@@ -337,30 +342,7 @@ sgMail.send(msg);
 
 
 //bulk email 
-app.get('/sendbulkemail', (req, res)=>{
-sgMail.setApiKey(sendgridapikey);
-let emails=['betapps2020@gmail.com','wabwoba.maelo10@gmail.com'];
-for(let i=0; i<emails.length; i++)
-{
-  const email={
-    from:'vincent.wabwoba18@gmail.com',
-    to: emails[i],
-    subject:'Bulk email sample',
-    text: 'Hello .. trying out the bulk email',
-    html:'<strong>and if it works its great</strong>'
-  };
-  sgMail.send(email ,(err, results)=>{
-    if(err){ console.log("error while sending email"+err);}
-    else{
-      console.log('Email sent')
-    }
-  });
-  console.log('Email sent to: '+emails[i]);
-}
-});
-
-//bulk email sample 2
-app.get('/emails', (req, res)=>{
+app.get('/sendbulkemails', (req, res)=>{
   sgMail.setApiKey(sendgridapikey);
   let sql="SELECT * from emails where status='send'";
   connection.query(sql, (err, rows, fields)=>{
@@ -372,11 +354,15 @@ app.get('/emails', (req, res)=>{
      to:rows[i].email,
      subject:'Bulk Email',
      text: rows[i].message,
-     html:'<strong>This is fun</strong>'
+     html:rows[i].message
    };
    sgMail.send(email,(err, results)=>{
      if(err) {console.log("Error occured"+err);}
-     else{console.log("Email snet");}
+     else{console.log("Email sent");}
+   });
+   let sql2='update emails set status="sent" where id="'+rows[i].id+'"';
+   connection.query(sql2, (err, result)=>{
+     if(err) throw err;
    });
    console.log("Email sent to:" +rows[i].email);
  }
