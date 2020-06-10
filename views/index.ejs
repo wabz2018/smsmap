@@ -10,22 +10,27 @@
     <!-- Tabs Titles -->
 
     <!-- Icon -->
-    <div class="fadeIn first">
-      <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
-    </div>
-
+   
+<div class="container">
     <!-- Login Form -->
-    <form>
-      <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-      <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-      <input type="submit" class="fadeIn fourth" value="Log In">
+    <div class="row">
+      <div class="fadeIn first">
+        <img src="/images/logo.png" id="icon" alt="User Icon" />
+      </div>
+    <div class="col-md 8">
+    <form action="/signin" method="POST"class="form-group">
+      <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username">
+      <input type="password" id="password" class="fadeIn third" name="password placeholder="password">
+      <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
     </form>
 
     <!-- Remind Passowrd -->
+    </div>
+    </div>
     <div id="formFooter">
       <a class="underlineHover" href="/resetuser">Forgot Password?</a>
       <a class="underlineHover" href="/register">New Sign UP?</a>
     </div>
-
+</div>
   </div>
 </div>

@@ -8,39 +8,20 @@
     <center><h4 style="color:blue;"><%= title%></h4></center>
     <%= typeof msg !='undefined' ? msg: ''%>
     <div class="row">
-        <form class="col s8" action="/controllers/addschool-controller" method="post">
+        <form class="col s8" action="/controllers/addclass-controller" method="post">
             <center> <h6><%= hd %></h6></center>
             <div class="form-group">
-                <label for="stype">Select list:</label>
-                <select class="form-control" id ="stype" name="stype">
-                    <option value="" disabled selected> --Select-- Type</option>
-                    <option value="Primary">Primary</option>
-                    <option value="Private">Private</option>
-                    <option value="Secondary">Secondary</option>
+                <label for="schoolcode">Schools:</label>
+                <select class="form-control" id ="schoolcode" name="schoolcode">
+                    <% for (var i=0; i<schools.length; i++){%>
+                        <option value<%= schools[i].schoolcode %> > <%= schools[i].schoolname %> </option>
+                        <% }%>
                 </select>
           </div>
             <div class="row">
                 <div class="input-field col s12">
-                    <input name="schoolname" type="text" class="validate">
-                    <label for="schoolname">School Name</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="schoolcontact" type="tel" class="validate" minlength="10" maxlength="16">
-                    <label for="schoolcontact">Phone Number</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="schoolemail" type="email" id ="schoolemail" class="validate">
-                    <label for="schoolemail">Email</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="schooladdress" type="text" id ="schooladdress" class="validate" minlength="6" max="50">
-                    <label for="schooladdress">Address :</label>
+                    <input name="classname" type="text" class="validate">
+                    <label for="classname">Class Name</label>
                 </div>
             </div>
             <button value="submit" class="btn">Save</button>
