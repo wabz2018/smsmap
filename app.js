@@ -62,9 +62,28 @@ const sgMail = require('@sendgrid/mail');
  app.get('/', function (req, res) {
    res.sendFile(__dirname + '/' + "login.html");
  });
-
- //register
- app.get('/register', function (req, res) {
+//render auth
+app.post('/auth', (req, res)=>{
+let username=req.body.username;
+let password=req.body.password;
+if(username && password){
+connection.query('SELECT * FROM users WHERE username = ?  AND password = ?', [username, password], (error, results, fields)=> {
+  if (results.length > 0) {
+    req.session.loggedin = true;
+    req.session.username = username;
+    res.redirect('/dashboard');
+  } else {
+    res.send('Incorrect Username and/or Password!');
+  }			
+  res.end();
+});
+} else {
+res.send('Please enter Username and Password!');
+res.end();
+}
+});
+ app.get('/register', (req, res)=>{
+   if(req.session.loggedin){
    res.render('register', {
      title: 'SMS | Solution',
      hd: 'ADD USER '
